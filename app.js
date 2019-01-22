@@ -33,11 +33,11 @@ app.get('/upload', (req,res) => {
 })
 
 // Managing the image upload using multer 
-app.post("/upload-photo", multer({dest: "./public/"}).single('image'), function(req, res) {
+app.post("/upload-photo", multer({dest: "./public/photos"}).single('image'), function(req, res) {
     // Store the photo
     let myRegister = JSON.parse(fs.readFileSync('./photo-register.json'));
     let tempPath=req.file.path;
-    let targetPath = "./public/photo" + myRegister.myPhotos.length + path.extname(req.file.originalname); 
+    let targetPath = "./public/photos/photo" + myRegister.myPhotos.length + path.extname(req.file.originalname); 
     console.log(targetPath)
     if (path.extname(targetPath).toLowerCase() === ".jpg" || path.extname(targetPath).toLowerCase() === ".jpeg" || path.extname(targetPath).toLowerCase() === ".png")   {
         fs.rename(tempPath, targetPath , err => {
@@ -48,7 +48,8 @@ app.post("/upload-photo", multer({dest: "./public/"}).single('image'), function(
                 let myDate= new Date(0);
                 myDate.setUTCMilliseconds(req.body.date)
                 let myPhotoInfos = {
-                    photoName: req.file.originalname,
+                    originalName: req.file.originalname,
+                    actualName: "photo" + myRegister.myPhotos.length,
                     photoUrl: "http://localhost:3000"+targetPath.slice(1),
                     uploadEpoch: req.body.date,
                     uploadDate: myDate,
